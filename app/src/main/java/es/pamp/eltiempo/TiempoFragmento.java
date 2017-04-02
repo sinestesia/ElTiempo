@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
     private Spinner ciudades;
     private String ciudad;
     private View v;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -33,6 +35,9 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
 
         // Inicialización de Spinner ciudades
         ciudades = (Spinner)v.findViewById(R.id.ciudades_spinner);
+
+        progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
+        //progressBar.setVisibility(View.INVISIBLE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(container.getContext(),R.array.ciudades_array, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ciudades.setAdapter(adapter);
@@ -47,14 +52,8 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         return v;
 
     }
-    public void pideTiempo(String ciudad){
-        //TODO Hacer petición  http://api.openweathermap.org/data/2.5/weather?q=Madrid&appid=db87faa1ae2eb9f5b56d2d2bd6e11ff2&units=metric&lang=es
-    }
     public void escribreTiempo (Tiempo tiempo){
         ciudadTV.setText(tiempo.getCiudad());
-    }
-    public void setTiempo(Tiempo tiempo) {
-        this.tiempo = tiempo;
     }
 
     @Override
@@ -62,13 +61,31 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         if (position!=0) { //Comprueba que no se haya seleccionado el mensaje de: Seleccione localidad
             ciudad = (String) parent.getItemAtPosition(position);
             tiempo = new Tiempo(ciudad);
-            pideTiempo(ciudad);
-            escribreTiempo(tiempo);
+            //TODO Borrar datos de pantalla
+            //progressBar.setVisibility(View.GONE);
+
+            tiempo.pideTiempo(ciudad);
+
+            if (tiempo.getValido()){
+                //progressBar.setVisibility(View.INVISIBLE);
+                //TODO mensaje de error
+            }else{
+                //progressBar.setVisibility(View.INVISIBLE);
+                escribreTiempo(tiempo);
+            }
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+    public void solicitudEnviada(){
+        progressBar.setVisibility(View.GONE);
+        ciudadTV.setText(tiempo.getCiudad());
+    }
+    public void datosRecibidos(){
+        progressBar.setVisibility(View.INVISIBLE);
+        ciudadTV.setText(tiempo.getCiudad());
     }
 }
