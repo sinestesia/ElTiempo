@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ciudades_array">
+        <item>Seleccione localidad</item>
+        <item>Barcelona</item>
+        <item>Cuenca</item>
+        <item>Madrid</item>
+        <item>Toledo</item>
+        <item>Valencia</item>
+        <item>Zaragoza</item>
+
+    </string-array>
+</resources>
