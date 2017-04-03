@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="direccion_api">http://api.openweathermap.org/data/2.5/weather?q=</string>
+    <string name="id_api">db87faa1ae2eb9f5b56d2d2bd6e11ff2</string>
+</resources>
+
