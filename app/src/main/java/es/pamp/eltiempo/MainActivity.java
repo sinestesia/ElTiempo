@@ -30,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
         tiempo = new Tiempo(); //TODO Revisat tiempo no se pasa información de este objeto a tiempofragmento.tiempo
         tiempo2 = new Tiempo();
 
+        if (savedInstanceState!=null){
+            tiempo.setPosicion(savedInstanceState.getInt("POSICION"));
+            tiempo.setCiudad(savedInstanceState.getString("CIUDAD"));
+            tiempo.setTemperatura(savedInstanceState.getString("TEMPERATURA"));
+            tiempo.setResultadoPeticion(savedInstanceState.getString("RESULTADOPETICION"));
+        }
 
         if (fl!=null) { //Comprueba si existe el framelayout, si existe la vista es horizontal
             TiempoFragmento tiempoFragmento2 = new TiempoFragmento();
@@ -42,9 +48,18 @@ public class MainActivity extends AppCompatActivity {
 
         TiempoFragmento tiempoFragmento = new TiempoFragmento();
 
-        tiempo.setCiudad("Prueba");
         tiempoFragmento.setTiempo(tiempo);
         transaction.replace(R.id.elTiempo1, tiempoFragmento);
         transaction.commit();
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("CIUDAD", tiempo.getCiudad());
+        outState.putString("RESULTADOPETICION", tiempo.getResultadoPeticion());
+        outState.putString("TEMPERATURA", tiempo.getTemperatura());
+        outState.putInt("POSICION", tiempo.getPosicion());
     }
 }

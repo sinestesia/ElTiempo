@@ -15,15 +15,36 @@ import java.net.URL;
 public class Tiempo {
     private String ciudad;
     private String resultadoPeticion;
+    private String temperatura;
+    private int posicion;
+
 
 
     public Tiempo() {
     }
 
+    public int getPosicion() {
+        return posicion;
+    }
+
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
+    }
+
+    public String getTemperatura() {
+        return temperatura;
+    }
+
+    public void setTemperatura(String temperatura) {
+        this.temperatura = temperatura;
+    }
+
     public void setResultadoPeticion(String resultadoPeticion) {
         this.resultadoPeticion = resultadoPeticion;
     }
-
+    public String getResultadoPeticion() {
+        return resultadoPeticion;
+    }
     public Tiempo(String ciudad) {
         this.ciudad = ciudad;
     }

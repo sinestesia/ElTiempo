@@ -34,6 +34,7 @@ import modelo.Tiempo;
 public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelectedListener {
     private Tiempo tiempo;
     private TextView ciudadTV;
+    private TextView temperaturaTV;
     private Spinner ciudades;
     private String ciudad;
     private View v;
@@ -51,13 +52,20 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         ciudades = (Spinner)v.findViewById(R.id.ciudades_spinner);
 
         progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),R.array.ciudades_array, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ciudades.setAdapter(adapter);
 
+        temperaturaTV = (TextView)v.findViewById(R.id.temperaturaTV);
         ciudadTV = (TextView)v.findViewById(R.id.ciudadTV);
         ciudades.setOnItemSelectedListener(this);
+
+        if (tiempo!=null){
+           if (tiempo.getCiudad()!=null){
+            mostrarInfo();
+           }
+        }
 
         return v;
 
@@ -70,6 +78,8 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0) { //Comprueba que no se haya seleccionado el mensaje de: Seleccione localidad
             ciudad = (String) parent.getItemAtPosition(position);
+            tiempo.setCiudad(ciudad);
+            tiempo.setPosicion(position);
 
             //TODO Borrar datos de pantalla
             progressBar.setVisibility(View.VISIBLE);
@@ -133,21 +143,21 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
     }
     public void guardarInfo(){
 
-        try {
-            JSONObject object = (JSONObject) new JSONTokener(resultadoPeticion).nextValue();
-            String main = object.getString("weather.main");
-            tiempo.setResultadoPeticion(main);
-        } catch (JSONException e) {
-            // Appropriate error handling code
-        }
+        tiempo.setResultadoPeticion(resultadoPeticion);
+        tiempo.setTemperatura("Prueba temperatura");
+
+
     }
     public void borrarInfo(){
         ciudadTV.setVisibility(View.INVISIBLE);
         //TODO Borrar info
     }
     public void mostrarInfo(){
+        ciudades.setSelection(tiempo.getPosicion());
         ciudadTV.setVisibility(View.VISIBLE);
-        ciudadTV.setText(resultadoPeticion);
+        ciudadTV.setText(tiempo.getResultadoPeticion());
+        temperaturaTV.setText(tiempo.getTemperatura());
+
         //TODO Mostrar info
     }
     public void setTiempo(Tiempo tiempo) {
