@@ -15,9 +15,14 @@ import java.net.URL;
 public class Tiempo {
     private String ciudad;
     private String resultadoPeticion;
-    private boolean valido;
 
 
+    public Tiempo() {
+    }
+
+    public void setResultadoPeticion(String resultadoPeticion) {
+        this.resultadoPeticion = resultadoPeticion;
+    }
 
     public Tiempo(String ciudad) {
         this.ciudad = ciudad;
@@ -29,8 +34,5 @@ public class Tiempo {
 
     public void setCiudad(String ciudad) {
         this.ciudad = ciudad;
-    }
-    public boolean getValido() {
-        return valido;
     }
 }

@@ -15,6 +15,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -46,8 +51,8 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         ciudades = (Spinner)v.findViewById(R.id.ciudades_spinner);
 
         progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
-        //progressBar.setVisibility(View.VISIBLE);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(container.getContext(),R.array.ciudades_array, R.layout.support_simple_spinner_dropdown_item);
+        progressBar.setVisibility(View.VISIBLE);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),R.array.ciudades_array, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ciudades.setAdapter(adapter);
 
@@ -65,7 +70,7 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0) { //Comprueba que no se haya seleccionado el mensaje de: Seleccione localidad
             ciudad = (String) parent.getItemAtPosition(position);
-            tiempo = new Tiempo(ciudad);
+
             //TODO Borrar datos de pantalla
             progressBar.setVisibility(View.VISIBLE);
 
@@ -121,8 +126,19 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
             if (respuesta == null) {
                 //TODO mostrarerror
             } else {
+                guardarInfo();
                 mostrarInfo();
             }
+        }
+    }
+    public void guardarInfo(){
+
+        try {
+            JSONObject object = (JSONObject) new JSONTokener(resultadoPeticion).nextValue();
+            String main = object.getString("weather.main");
+            tiempo.setResultadoPeticion(main);
+        } catch (JSONException e) {
+            // Appropriate error handling code
         }
     }
     public void borrarInfo(){
@@ -133,6 +149,9 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         ciudadTV.setVisibility(View.VISIBLE);
         ciudadTV.setText(resultadoPeticion);
         //TODO Mostrar info
+    }
+    public void setTiempo(Tiempo tiempo) {
+        this.tiempo = tiempo;
     }
 
     @Override
