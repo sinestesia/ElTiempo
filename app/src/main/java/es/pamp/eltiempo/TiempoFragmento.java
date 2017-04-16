@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,6 +144,11 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         }
     }
     public void guardarInfo(){
+
+         Gson gson = new Gson();
+        // Coord solicitudTiempo = gson.fromJson(resultadoPeticion, Coord.class); //No FUNCIONAAAA!!!
+       // String test= solicitudTiempo.getPrincipal();
+
 
         tiempo.setResultadoPeticion(resultadoPeticion);
         tiempo.setTemperatura("Prueba temperatura");
