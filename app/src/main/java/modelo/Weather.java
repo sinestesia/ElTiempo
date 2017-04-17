@@ -1,26 +1,25 @@
-package es.pamp.eltiempo;
+package modelo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by pamp on 16/04/17.
+ * Created by pamp on 17/04/17.
  */
 
-class SolicitudTiempo {
-    public SolicitudTiempo(Integer id, String main, String description, String icon) {
-        this.id = id;
-        this.main = main;
-        this.description = description;
-        this.icon = icon;
-    }
+public class Weather {
 
+    @SerializedName("id")
+    @Expose
     private Integer id;
-
+    @SerializedName("main")
+    @Expose
     private String main;
-
+    @SerializedName("description")
+    @Expose
     private String description;
-
+    @SerializedName("icon")
+    @Expose
     private String icon;
 
     public Integer getId() {

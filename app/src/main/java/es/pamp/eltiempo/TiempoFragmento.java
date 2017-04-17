@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import modelo.SolicitudTiempo;
 import modelo.Tiempo;
 
 /**
@@ -109,7 +110,7 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
             try {
                 //construirURL
 
-                urlPeticion=getResources().getString(R.string.direccion_api)+ ciudad +"&appid=" +  getResources().getString(R.string.id_api) + "&units=metric&lang=es";
+                urlPeticion=getResources().getString(R.string.direccion_api)+ ciudad +",sp&appid=" +  getResources().getString(R.string.id_api) + "&units=metric&lang=es";
                 URL url = new URL(urlPeticion);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try {
@@ -145,8 +146,12 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
     }
     public void guardarInfo(){
 
+        //GENERADOR de objetos Java de JSON http://www.jsonschema2pojo.org/
          Gson gson = new Gson();
-        // Coord solicitudTiempo = gson.fromJson(resultadoPeticion, Coord.class); //No FUNCIONAAAA!!!
+        //"{\"coord\":{\"lon\":-83.56,\"lat\":41.66},\"weather\":[{\"id\":800,\"main\":\"Clear\",\"description\":\"cielo claro\",\"icon\":\"01n\"}],\"base\":\"stations\",\"main\":{\"temp\":9.92,\"pressure\":1019,\"humidity\":61,\"temp_min\":7,\"temp_max\":13},\"visibility\":16093,\"wind\":{\"speed\":1.5,\"deg\":330},\"clouds\":{\"all\":1},\"dt\":1492419120,\"sys\":{\"type\":1,\"id\":2195,\"message\":0.2071,\"country\":\"US\",\"sunrise\":1492426208,\"sunset\":1492474670},\"id\":5174035,\"name\":\"Toledo\",\"cod\":200}\n"
+
+
+         SolicitudTiempo solicitudTiempo = gson.fromJson(resultadoPeticion, SolicitudTiempo.class); //No FUNCIONAAAA!!!
        // String test= solicitudTiempo.getPrincipal();
 
 
