@@ -6,14 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import modelo.Tiempo;
-
 public class MainActivity extends AppCompatActivity {
     private boolean vertical;
     private FragmentTransaction transaction;
     private FragmentManager fragmentManager;
-    public Tiempo tiempo;
-    public Tiempo tiempo2;
+    public TiempoFragmento tiempoFragmento;
+    public TiempoFragmento tiempoFragmento2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,28 +25,22 @@ public class MainActivity extends AppCompatActivity {
 
         FrameLayout fl = (FrameLayout)findViewById(R.id.elTiempo2); //Para comprobar si existe
 
-        tiempo = new Tiempo(); //TODO Revisat tiempo no se pasa información de este objeto a tiempofragmento.tiempo
-        tiempo2 = new Tiempo();
-
-        if (savedInstanceState!=null){
-            tiempo.setPosicion(savedInstanceState.getInt("POSICION"));
-            tiempo.setCiudad(savedInstanceState.getString("CIUDAD"));
-            tiempo.setTemperatura(savedInstanceState.getString("TEMPERATURA"));
-            tiempo.setResultadoPeticion(savedInstanceState.getString("RESULTADOPETICION"));
-        }
 
         if (fl!=null) { //Comprueba si existe el framelayout, si existe la vista es horizontal
-            TiempoFragmento tiempoFragmento2 = new TiempoFragmento();
-            tiempoFragmento2.setTiempo(tiempo2);
+            tiempoFragmento2 = new TiempoFragmento();
             transaction.replace(R.id.elTiempo2, tiempoFragmento2);
             vertical=false;
-        }else{ //TODO Quitar si no es necesario y eliminar variable vertical
-            vertical=true;
         }
 
-        TiempoFragmento tiempoFragmento = new TiempoFragmento();
+        tiempoFragmento = new TiempoFragmento();
 
-        tiempoFragmento.setTiempo(tiempo);
+
+        if (savedInstanceState!=null){
+            tiempoFragmento.setPosicion(savedInstanceState.getInt("POSICION"));
+            tiempoFragmento.setCiudad(savedInstanceState.getString("CIUDAD"));
+            tiempoFragmento.setResultadoPeticion(savedInstanceState.getString("RESULTADOPETICION"));
+        }
+
         transaction.replace(R.id.elTiempo1, tiempoFragmento);
         transaction.commit();
     }
@@ -57,9 +49,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("CIUDAD", tiempo.getCiudad());
-        outState.putString("RESULTADOPETICION", tiempo.getResultadoPeticion());
-        outState.putString("TEMPERATURA", tiempo.getTemperatura());
-        outState.putInt("POSICION", tiempo.getPosicion());
+        outState.putString("CIUDAD", tiempoFragmento.getCiudad());
+        outState.putString("RESULTADOPETICION", tiempoFragmento.getResultadoPeticion());
+        outState.putInt("POSICION", tiempoFragmento.getPosicion());
     }
 }

@@ -13,14 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -28,14 +22,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import modelo.SolicitudTiempo;
-import modelo.Tiempo;
 
 /**
  * Created by pamp on 02/04/17.
  */
 
 public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelectedListener {
-    private Tiempo tiempo;
     private TextView ciudadTV;
     private TextView temperaturaTV;
     private Spinner ciudades;
@@ -44,6 +36,7 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
     private ProgressBar progressBar;
     private String resultadoPeticion;
     private String urlPeticion;
+    private int posicion;
 
     @Nullable
     @Override
@@ -64,25 +57,21 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         ciudadTV = (TextView)v.findViewById(R.id.ciudadTV);
         ciudades.setOnItemSelectedListener(this);
 
-        if (tiempo!=null){
-           if (tiempo.getCiudad()!=null){
+
+        if (resultadoPeticion!=null){
+            guardarInfo();
             mostrarInfo();
-           }
         }
 
         return v;
 
-    }
-    public void escribeTiempo (Tiempo tiempo){
-        ciudadTV.setText(tiempo.getCiudad());
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0) { //Comprueba que no se haya seleccionado el mensaje de: Seleccione localidad
             ciudad = (String) parent.getItemAtPosition(position);
-            tiempo.setCiudad(ciudad);
-            tiempo.setPosicion(position);
+            posicion= position;
 
             //TODO Borrar datos de pantalla
             progressBar.setVisibility(View.VISIBLE);
@@ -150,13 +139,8 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
          Gson gson = new Gson();
         //"{\"coord\":{\"lon\":-83.56,\"lat\":41.66},\"weather\":[{\"id\":800,\"main\":\"Clear\",\"description\":\"cielo claro\",\"icon\":\"01n\"}],\"base\":\"stations\",\"main\":{\"temp\":9.92,\"pressure\":1019,\"humidity\":61,\"temp_min\":7,\"temp_max\":13},\"visibility\":16093,\"wind\":{\"speed\":1.5,\"deg\":330},\"clouds\":{\"all\":1},\"dt\":1492419120,\"sys\":{\"type\":1,\"id\":2195,\"message\":0.2071,\"country\":\"US\",\"sunrise\":1492426208,\"sunset\":1492474670},\"id\":5174035,\"name\":\"Toledo\",\"cod\":200}\n"
 
-
          SolicitudTiempo solicitudTiempo = gson.fromJson(resultadoPeticion, SolicitudTiempo.class); //No FUNCIONAAAA!!!
        // String test= solicitudTiempo.getPrincipal();
-
-
-        tiempo.setResultadoPeticion(resultadoPeticion);
-        tiempo.setTemperatura("Prueba temperatura");
 
 
     }
@@ -165,19 +149,39 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         //TODO Borrar info
     }
     public void mostrarInfo(){
-        ciudades.setSelection(tiempo.getPosicion());
+        ciudades.setSelection(posicion);
         ciudadTV.setVisibility(View.VISIBLE);
-        ciudadTV.setText(tiempo.getResultadoPeticion());
-        temperaturaTV.setText(tiempo.getTemperatura());
+        ciudadTV.setText(resultadoPeticion);
 
         //TODO Mostrar info
-    }
-    public void setTiempo(Tiempo tiempo) {
-        this.tiempo = tiempo;
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getResultadoPeticion() {
+        return resultadoPeticion;
+    }
+
+    public void setResultadoPeticion(String resultadoPeticion) {
+        this.resultadoPeticion = resultadoPeticion;
+    }
+
+    public int getPosicion() {
+        return posicion;
+    }
+
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
     }
 }

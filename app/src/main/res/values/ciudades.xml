@@ -3,9 +3,9 @@
     <string-array name="ciudades_array">
         <item>Seleccione localidad</item>
         <item>Barcelona</item>
-        <item>Cuenca</item>
+        <item>Cadiz</item>
         <item>Madrid</item>
-        <item>Toledo</item>
+        <item>Santander</item>
         <item>Valencia</item>
         <item>Zaragoza</item>
 
