@@ -18,6 +18,10 @@ public class SolicitudTiempo {
     @Expose
     private Main main;
 
+    @SerializedName("wind")
+    @Expose
+    private Wind wind;
+
 
     public Coord getCoord() {
         return coord;
@@ -29,4 +33,5 @@ public class SolicitudTiempo {
     public Main getMain() {
         return main;
     }
+    public Wind getWind() {return wind;}
 }

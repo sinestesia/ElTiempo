@@ -4,22 +4,27 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 
 import modelo.SolicitudTiempo;
 
@@ -28,8 +33,14 @@ import modelo.SolicitudTiempo;
  */
 
 public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelectedListener {
-    private TextView ciudadTV;
+    private SolicitudTiempo solicitudTiempo;
+    private TextView descripcionTV;
+    private ConstraintLayout temperaturasCL;
     private TextView temperaturaTV;
+    private TextView temperaturaMinTV;
+    private TextView temperaturaMaxTV;
+    private TextView velocidadTV;
+    private ImageView iconIV;
     private Spinner ciudades;
     private String ciudad;
     private View v;
@@ -48,23 +59,27 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         ciudades = (Spinner)v.findViewById(R.id.ciudades_spinner);
 
         progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
-        //progressBar.setVisibility(View.VISIBLE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),R.array.ciudades_array, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ciudades.setAdapter(adapter);
-
+        iconIV = (ImageView)v.findViewById(R.id.iconIV);
+        descripcionTV= (TextView)v.findViewById(R.id.descripcionTV);
+        temperaturasCL = (ConstraintLayout)v.findViewById(R.id.temperaturasCL);
         temperaturaTV = (TextView)v.findViewById(R.id.temperaturaTV);
-        ciudadTV = (TextView)v.findViewById(R.id.ciudadTV);
-        ciudades.setOnItemSelectedListener(this);
+        temperaturaMinTV = (TextView)v.findViewById(R.id.temperaturaMinTV);
+        temperaturaMaxTV = (TextView)v.findViewById(R.id.temperaturaMaxTV);
+        velocidadTV = (TextView)v.findViewById(R.id.velocidadTV);
 
+        ciudades.setOnItemSelectedListener(this);
 
         if (resultadoPeticion!=null){
             guardarInfo();
             mostrarInfo();
+        }else{
+            borrarInfo();
         }
 
         return v;
-
     }
 
     @Override
@@ -72,13 +87,10 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
         if (position!=0) { //Comprueba que no se haya seleccionado el mensaje de: Seleccione localidad
             ciudad = (String) parent.getItemAtPosition(position);
             posicion= position;
-
-            //TODO Borrar datos de pantalla
             progressBar.setVisibility(View.VISIBLE);
 
             new RecuperarDatos().execute();//solicita los datos a la web y recupera el String resultadoPeticion
             //Ejemplo petición http://www.androidauthority.com/use-remote-web-api-within-android-app-617869/
-
 
         }
     }
@@ -133,27 +145,65 @@ public class TiempoFragmento extends Fragment implements AdapterView.OnItemSelec
             }
         }
     }
+
     public void guardarInfo(){
 
         //GENERADOR de objetos Java de JSON http://www.jsonschema2pojo.org/
-         Gson gson = new Gson();
-        //"{\"coord\":{\"lon\":-83.56,\"lat\":41.66},\"weather\":[{\"id\":800,\"main\":\"Clear\",\"description\":\"cielo claro\",\"icon\":\"01n\"}],\"base\":\"stations\",\"main\":{\"temp\":9.92,\"pressure\":1019,\"humidity\":61,\"temp_min\":7,\"temp_max\":13},\"visibility\":16093,\"wind\":{\"speed\":1.5,\"deg\":330},\"clouds\":{\"all\":1},\"dt\":1492419120,\"sys\":{\"type\":1,\"id\":2195,\"message\":0.2071,\"country\":\"US\",\"sunrise\":1492426208,\"sunset\":1492474670},\"id\":5174035,\"name\":\"Toledo\",\"cod\":200}\n"
+        //EJEMPLO RESPUESTA: "{\"coord\":{\"lon\":-83.56,\"lat\":41.66},\"weather\":[{\"id\":800,\"main\":\"Clear\",\"description\":\"cielo claro\",\"icon\":\"01n\"}],\"base\":\"stations\",\"main\":{\"temp\":9.92,\"pressure\":1019,\"humidity\":61,\"temp_min\":7,\"temp_max\":13},\"visibility\":16093,\"wind\":{\"speed\":1.5,\"deg\":330},\"clouds\":{\"all\":1},\"dt\":1492419120,\"sys\":{\"type\":1,\"id\":2195,\"message\":0.2071,\"country\":\"US\",\"sunrise\":1492426208,\"sunset\":1492474670},\"id\":5174035,\"name\":\"Toledo\",\"cod\":200}\n"
 
-         SolicitudTiempo solicitudTiempo = gson.fromJson(resultadoPeticion, SolicitudTiempo.class); //No FUNCIONAAAA!!!
-       // String test= solicitudTiempo.getPrincipal();
-
-
+        Gson gson = new Gson();
+        solicitudTiempo = gson.fromJson(resultadoPeticion, SolicitudTiempo.class);
     }
+
     public void borrarInfo(){
-        ciudadTV.setVisibility(View.INVISIBLE);
-        //TODO Borrar info
+        temperaturasCL.setVisibility(View.INVISIBLE);
+        iconIV.setVisibility(View.INVISIBLE);
+        descripcionTV.setVisibility(View.INVISIBLE);
     }
+
     public void mostrarInfo(){
         ciudades.setSelection(posicion);
-        ciudadTV.setVisibility(View.VISIBLE);
-        ciudadTV.setText(resultadoPeticion);
+        temperaturasCL.setVisibility(View.VISIBLE);
+        iconIV.setVisibility(View.VISIBLE);
+        descripcionTV.setVisibility(View.VISIBLE);
 
-        //TODO Mostrar info
+        DecimalFormat formatoDecimal = new DecimalFormat("#.#");
+
+        int codigo = (solicitudTiempo.getWeather().get(0).getId());
+        switch (codigo/100) {
+            case 8:
+                if (codigo==800){
+                    iconIV.setImageResource(R.drawable.i800);
+                }else{
+                    iconIV.setImageResource(R.drawable.i8xx);
+                }
+                break;
+            case 7:
+                iconIV.setImageResource(R.drawable.i7xx);
+                break;
+            case 6:
+                iconIV.setImageResource(R.drawable.i6xx);
+                break;
+            case 5:
+                iconIV.setImageResource(R.drawable.i5xx);
+                break;
+            case 3:
+                iconIV.setImageResource(R.drawable.i3xx);
+                break;
+            case 2:
+                iconIV.setImageResource(R.drawable.i2xx);
+                break;
+            default:
+                iconIV.setImageResource(R.drawable.i800);
+                break;
+        }
+        descripcionTV.setText(solicitudTiempo.getWeather().get(0).getDescription());
+        temperaturaTV.setText(formatoDecimal.format(solicitudTiempo.getMain().getTemp())+"º");
+        temperaturaMinTV.setText(formatoDecimal.format(solicitudTiempo.getMain().getTempMin())+"º");
+        temperaturaMaxTV.setText(formatoDecimal.format(solicitudTiempo.getMain().getTempMax())+"º");
+        velocidadTV.setText(formatoDecimal.format(solicitudTiempo.getWind().getSpeed()) + " km/h");
+
+
     }
 
     @Override
